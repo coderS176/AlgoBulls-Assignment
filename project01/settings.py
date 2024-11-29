@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-scgvk5^*wroi8majpj%%236swptt&)0&5x0_)m=gm7s=rl-axg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['3.25.200.193', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -128,6 +128,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # Adjust this path based on your directory structure
+]
+
+# For production (when running `collectstatic`)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
