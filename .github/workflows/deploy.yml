@@ -11,52 +11,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          submodules: false  # Fetch submodules
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: "3.x"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirement.txt
-
-      - name: Debug EC2 Public IP
-        run: |
-          echo "EC2 Public IP: ${{ secrets.EC2_PUBLIC_IP }}"
-
       - name: Copy SSH key for EC2
         run: |
           mkdir -p ~/.ssh
           echo "$EC2_SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-add ~/.ssh/id_rsa  # Add key to ssh-agent
 
-      - name: Ensure SSH directory and known_hosts file exist
+      - name: Add EC2 to known hosts
         run: |
-          mkdir -p ~/.ssh
-          touch ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-
-      - name: Clean known_hosts and Add EC2 to known hosts
-        run: |
-          rm -f ~/.ssh/known_hosts
           ssh-keyscan -H ${{ secrets.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
-
-      - name: Debug SSH Key Permissions
-        run: |
-          ls -la ~/.ssh
-          cat ~/.ssh/id_rsa
-          ssh-add -l  # List loaded keys
 
       - name: Deploy to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
             cd /home/ec2-user/AlgoBulls-Assignment
-            git pull origin main
+            git pull origin main  
             source /home/ec2-user/AlgoBulls-Assignment/venv/bin/activate
             pip install -r requirement.txt
             sudo systemctl restart gunicorn
