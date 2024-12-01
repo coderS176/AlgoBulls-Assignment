@@ -56,7 +56,7 @@ jobs:
             cd /home/ec2-user/AlgoBulls-Assignment
             git pull origin main
             source /home/ec2-user/AlgoBulls-Assignment/venv/bin/activate
-            pip install -r requirements.txt
+            pip install -r requirement.txt
             sudo systemctl restart gunicorn
             sudo systemctl restart nginx
           EOF
